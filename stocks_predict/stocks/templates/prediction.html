@@ -1,0 +1,51 @@
+<!-- prediction.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Prediction</title>
+</head>
+<body>
+    <h1>Stock Prediction</h1>
+    <form method="post" action="{% url 'stock_prediction' %}">
+        {% csrf_token %}
+        <label for="symbol">Stock Symbol:</label>
+        <input type="text" id="symbol" name="symbol" required><br><br>
+        
+        <label for="duration">Duration (years):</label>
+        <input type="number" id="duration" name="duration" required><br><br>
+        
+        <label for="prediction_period">Prediction Period (days):</label>
+        <input type="number" id="prediction_period" name="prediction_period" required><br><br>
+        
+        <input type="submit" value="Predict">
+    </form>
+
+    {% if output_data %}
+        <h2>Stock Symbol: {{ output_data.symbol }}</h2>
+        <h2>Duration: {{ output_data.duration }} years</h2>
+
+        {% if output_data.future_prices %}
+            <h3>Predicted Future Prices:</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for date, price in output_data.future_prices %}
+                    <tr>
+                        <td>{{ date }}</td>
+                        <td>{{ price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No predicted future prices available.</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
