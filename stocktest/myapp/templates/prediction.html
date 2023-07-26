@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Prediction</title>
+    <!-- Add Bootstrap CSS and JS links here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        /* Add your CSS styles here */
+        .tab-content {
+            padding: 20px;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.show {
+            display: block;
+        }
+        .positive {
+            color: green;
+        }
+        .negative {
+            color: red;
+        }
+        .neutral {
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stock Prediction</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <label for="symbol">Stock Symbol:</label>
+                <input type="text" id="symbol" name="symbol" required>
+            </div>
+            <div class="col">
+                <label for="duration">Duration (years):</label>
+                <input type="number" id="duration" name="duration" required>
+            </div>
+            <div class="col">
+                <label for="prediction_period">Prediction Period (days):</label>
+                <input type="number" id="prediction_period" name="prediction_period" required>
+            </div>
+            <div class="col">
+                <input type="submit" value="Predict">
+            </div>
+        </div>
+    </div>
+
+    {% if output_data %}
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#company-info">Company Information</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#graph">Graph</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#articles">Articles</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="company-info" class="tab-pane fade show active">
+                {% if output_data.company_info %}
+                    <h2>Company Information:</h2>
+                    <ul>
+                        <li>Website: <a href="{{ output_data.company_info.Website }}" target="_blank">{{ output_data.company_info.Website }}</a></li>
+                        <li>Basic Info: {{ output_data.company_info.Description }}</li>
+                        <li>Full-Time Employees: {{ output_data.company_info.Full_Time_Employees }}</li>
+                        <li>Total Revenue: {{ output_data.company_info.Total_Revenue }}</li>
+                        <li>Volume: {{ output_data.company_info.Volume }}</li>
+                        
+                        <li>Target High Price: {{ output_data.company_info.Target_High_Price }}</li>
+                        <li>Target Low Price: {{ output_data.company_info.Target_Low_Price }}</li>
+                        <li>Dividend Yield: {{ output_data.company_info.Dividend_Yield }}</li>
+                        <li>Beta: {{ output_data.company_info.Beta }}</li>
+                        <li>Debt to Equity: {{ output_data.company_info.Debt_to_Equity }}</li>
+                        <li>Company Officers:</li>
+                        <ul>
+                            {% for officer in output_data.company_info.companyOfficers %}
+                                <li>{{ officer.name }} ({{ officer.title }})</li>
+                            {% endfor %}
+                        </ul>
+                        <!-- Add other fields as needed -->
+                    </ul>
+                {% else %}
+                    <p>No company information available.</p>
+                {% endif %}
+            </div>
+            
+            <div id="graph" class="tab-pane fade">
+                {% if output_data.graph_html %}
+                    <h3>Graph:</h3>
+                    {{ output_data.graph_html|safe }}
+                {% else %}
+                    <p>No graph data available.</p>
+                {% endif %}
+            </div>
+
+            <div id="articles" class="tab-pane fade">
+                {% if output_data.articles %}
+                    <h2>Articles:</h2>
+                    <ul>
+                        {% for article in output_data.articles %}
+                            <li class="{% if article.4 > 0 %}positive{% elif article.4 < 0 %}negative{% else %}neutral{% endif %}">
+                                <strong>{{ article.0 }}</strong> ({{ article.1 }})<br>
+                                <p>{{ article.2 }}</p>
+                                {% if article.3 %}
+                                    <a href="{{ article.3 }}" target="_blank">Read more</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No articles available.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Add your JavaScript/jQuery code here for tabs functionality -->
+    <script>
+        $(document).ready(function () {
+            // Add your JavaScript/jQuery code here for handling tab functionality (if needed)
+        });
+    </script>
+
+</body>
+</html>
