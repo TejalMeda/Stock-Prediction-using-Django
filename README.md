@@ -10,3 +10,4 @@ To use this project follow the below steps:
 3. Once the code has been installed navigate to the main directory(i.e the main stocktest folder) and run the code in the command prompt:py manage.py runserver.
    
 4. After the server has started copy paste the html link to access the project.
+   http://127.0.0.1:8000/stock/news/
